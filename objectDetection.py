@@ -100,7 +100,7 @@ if __name__ == "__main__":
             cv2.setMouseCallback('frame', on_mouse_click, frame)
             
             #set color threshhold (filter, needs to be adjusted to proper values)
-            thresh = cv2.inRange(hsv, np.array((120, 80, 80)), np.array((180, 255, 255)))
+            #thresh = cv2.inRange(hsv, np.array((120, 80, 80)), np.array((180, 255, 255)))
             
             #find color using threshhold
             if colors:
