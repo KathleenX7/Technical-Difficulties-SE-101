@@ -7,6 +7,7 @@ import numpy as np
 #changes hsv values to rgb values
 def nothing(x):
     pass
+
 cv2.namedWindow("Trackbars")
 cv2.createTrackbar("B", "Trackbars", 0, 255, nothing)
 cv2.createTrackbar("G", "Trackbars", 0, 255, nothing)
@@ -24,7 +25,7 @@ rawCapture = PiRGBArray(camera, size=(320,240))
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     image = frame.array
 
-#setting up color recognition
+    #setting up color recognition
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     B = cv2.getTrackbarPos("B", "Trackbars")
