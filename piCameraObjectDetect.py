@@ -25,18 +25,31 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     image = frame.array
 
 #setting up color recognition
-hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-#set pi camera parameters to optimize loading frames
-#might need decrease resolution and increase framerate
-width, height = 320, 240
-camera = PiCamera
-camera.resolution = (width, height)
-camera.framerate = 30
-rawCapture = PiRGBArray(camera, size=(width, height))
-time.sleep(1)
+    B = cv2.getTrackbarPos("B", "Trackbars")
+    G = cv2.getTrackbarPos("G", "Trackbars")
+    R = cv2.getTrackbarPos("R", "Trackbars")
 
-#reading frames
-for frame in camera.capture_continous(rawCapture, format='bgr', use_video_port=True):
-    image = frame.array
-    frame = cv2.flip(image,1)
+    green = np.uint8([[[B,G,R]]])
+    hsvGreen = cv2.cvtColor(green,cv2.COLOR_BGR2HSV)
+    lowerLimit = np.uint8([hsvGreen[0][0][0]-10,100,100])
+    upperLimit = np.uint8([hsvGreen[0][0][0]+10,255,255])
+
+    #adjusting the threshold of the HSV image for range of selected color
+    mask = cv2.inRange(hsv, lowerLimit, upperLimit)
+
+    #actually taking out the objects of the colors in the frame
+    result = cv2.bitwise_and(image, image, mask=mask)
+
+    cv2.imshow("frame", image)
+    cv2.imshow("mask", mask)
+    cv2.imshow("result", result)
+    key = cv2.waitKey(1)
+
+    #clearing the stream
+    rawCapture.truncate(0)
+    if key == 27:
+        break
+
+cv2.destroyAllWindows()
