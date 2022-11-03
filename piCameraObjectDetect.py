@@ -1,67 +1,56 @@
 #import necessary packages
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-import time
 import cv2
+import numpy as np
 
 #changes hsv values to rgb values
-def hsv2rgb(h, s, v):
-    h = float(h) * 2
-    s = float(s) / 255
-    v = float(v) / 255
-    h60 = h / 60.0
-    h60f = math.floor(h60)
-    hi = int(h60f) % 6
-    f = h60 - h60f
-    p = v * (1 - s)
-    q = v * (1 - f * s)
-    t = v * (1 - (1 - f) * s)
-    r, g, b = 0, 0, 0
-    if hi == 0: r, g, b = v, t, p
-    elif hi == 1: r, g, b = q, v, p
-    elif hi == 2: r, g, b = p, v, t
-    elif hi == 3: r, g, b = p, q, v
-    elif hi == 4: r, g, b = t, p, v
-    elif hi == 5: r, g, b = v, p, q
-    r, g, b = int(r * 255), int(g * 255), int(b * 255)
-    return (r, g, b)
+def nothing(x):
+    pass
 
-#changes rgb values to hsv values
-def rgb2hsv(r, g, b):
-    r, g, b = r/255.0, g/255.0, b/255.0
-    mx = max(r, g, b)
-    mn = min(r, g, b)
-    diff = mx-mn
-    if mx == mn:
-        h = 0
-    elif mx == r:
-        h = (60 * ((g-b)/diff) + 360) % 360
-    elif mx == g:
-        h = (60 * ((b-r)/diff) + 120) % 360
-    elif mx == b:
-        h = (60 * ((r-g)/diff) + 240) % 360
-    if mx == 0:
-        s = 0
-    else:
-        s = diff/mx
-    v = mx
+cv2.namedWindow("Trackbars")
+cv2.createTrackbar("B", "Trackbars", 0, 255, nothing)
+cv2.createTrackbar("G", "Trackbars", 0, 255, nothing)
+cv2.createTrackbar("R", "Trackbars", 0, 255, nothing)
 
-    h = int(h / 2)
-    s = int(s * 255)
-    v = int(v * 255)
-
-    return (h, s, v)
-
-#set pi camera parameters to optimize loading frames
-#might need decrease resolution and increase framerate
-width, height = 320, 240
-camera = PiCamera
-camera.resolution = (width, height)
+#initializes the camera object
+camera = PiCamera()
+camera.resolution = (320, 240)
 camera.framerate = 30
-rawCapture = PiRGBArray(camera, size=(width, height))
-time.sleep(1)
 
-#reading frames
-for frame in camera.capture_continous(rawCapture, format='bgr', use_video_port=True):
+#editing PiRGBArray
+rawCapture = PiRGBArray(camera, size=(320,240))
+
+#reading frames from camera module
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     image = frame.array
-    frame = cv2.flip(image,1)
+
+    #setting up color recognition
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    B = cv2.getTrackbarPos("B", "Trackbars")
+    G = cv2.getTrackbarPos("G", "Trackbars")
+    R = cv2.getTrackbarPos("R", "Trackbars")
+
+    green = np.uint8([[[B,G,R]]])
+    hsvGreen = cv2.cvtColor(green,cv2.COLOR_BGR2HSV)
+    lowerLimit = np.uint8([hsvGreen[0][0][0]-10,100,100])
+    upperLimit = np.uint8([hsvGreen[0][0][0]+10,255,255])
+
+    #adjusting the threshold of the HSV image for range of selected color
+    mask = cv2.inRange(hsv, lowerLimit, upperLimit)
+
+    #actually taking out the objects of the colors in the frame
+    result = cv2.bitwise_and(image, image, mask=mask)
+
+    cv2.imshow("frame", image)
+    cv2.imshow("mask", mask)
+    cv2.imshow("result", result)
+    key = cv2.waitKey(1)
+
+    #clearing the stream
+    rawCapture.truncate(0)
+    if key == 27:
+        break
+
+cv2.destroyAllWindows()
