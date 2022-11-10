@@ -17,7 +17,7 @@ On Rasberry Pi with the very nice broken screen:
 
 On your own computer
 1. Connect to hotspot
-2. Type ```shh saaniya@IP_ADDRESS```
+2. Type ```ssh saaniya@IP_ADDRESS```
     * First time running: type ```yes```
 3. Enter password (check discord)
 4. Edit a file: ```sudo nano file.py```
