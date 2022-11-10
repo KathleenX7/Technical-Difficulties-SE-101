@@ -22,5 +22,5 @@ On your own computer
 3. Enter password (check discord)
 4. Edit a file: ```sudo nano file.py```
     * ```control x``` to save
-    * ```control k``` for faster deleting (actually cutting on line at a time but it works)
+    * ```control k``` for faster deleting (actually cutting one line at a time but it works)
 5. Run a file: ```sudo python file.py```
