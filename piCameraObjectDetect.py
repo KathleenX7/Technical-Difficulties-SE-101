@@ -97,3 +97,4 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         break
 
 cv2.destroyAllWindows()
+camera.close()
