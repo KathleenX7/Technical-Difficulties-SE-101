@@ -78,8 +78,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     #find centroids of best_cont and draw a circle there
     if isset('best_cont'):
         M = cv2.moments(best_cont)
-        cx, cy = int(M['m10'] / M['m00'], int(M['m01'] / M['m00']))
-        cv2.circle(frame(cx, cy), 5, 255, -1)
+        cx, cy = int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])
+        #cv2.circle(frame(cx, cy), 5, 255, -1)
         print("Central pos: (%d, %d)" % (cx, cy))
     else:
         print("[Warning]Tag lost...")
@@ -96,7 +96,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     #clearing the stream
     rawCapture.truncate(0)
-    if key == 27:
+    if key == 'f':
         break
 
 # cv2.destroyAllWindows()
