@@ -1,20 +1,24 @@
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
-from time import sleep
-from guizero import App, Text, PushButton
-from gpiozero import Robot, LED
 import numpy as np
+import RPi.GPIO as GPIO
+from time import sleep
+GPIO.setmode(GPIO.BCM)
 
 #initialize motors
-motor = Robot(left=(4, 14), right=(17, 18))
-motorSwitch = LED(27)
+Motor1A = 24
+Motor1B = 23
+Motor1E = 25
 
-app = App(title="GUI Development", layout="grid", height=600, width=800)
-message = Text(app, text="Dual Motor Control Interface", grid=[4,0])
+GPIO.setup(Motor1A, GPIO.OUT)
+GPIO.setup(Motor1B, GPIO.OUT)
+GPIO.setup(Motor1E, GPIO.OUT)
+print("Setup complete")
 
-motorSpeedForward = 0
-motorSpeedBackward = 0
+error = 15
+xPosition = 100
+middle = 160
 
 #motor functions
 def toggleSwitch():
