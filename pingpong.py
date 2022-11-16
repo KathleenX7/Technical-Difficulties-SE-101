@@ -86,7 +86,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     else:
         print("[Warning]Tag lost...")
     
-    if(abs(cx - middle) > error):  
+    if (abs(cx - middle) > error):  
         if (cx - middle) < 0:
             GPIO.output(Motor1A, GPIO.LOW)
             GPIO.output(Motor1B, GPIO.HIGH)
@@ -97,6 +97,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             GPIO.output(Motor1B, GPIO.LOW)
             GPIO.output(Motor1E, GPIO.HIGH)
             print("Moving forwards")
+    else:
+        GPIO.output(Motor1E, GPIO.LOW)
+        print("Stop")
          
     key = cv2.waitKey(1)
 
@@ -106,3 +109,5 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         break
 
 camera.close()
+print("Clean up")
+GPIO.cleanup()
