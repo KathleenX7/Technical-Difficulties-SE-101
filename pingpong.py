@@ -17,7 +17,6 @@ GPIO.setup(Motor1E, GPIO.OUT)
 print("Setup complete")
 
 error = 15
-xPosition = 100
 middle = 160
 
 def isset(v):
@@ -87,13 +86,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     else:
         print("[Warning]Tag lost...")
     
-    if(abs(xPosition-middle) > error):  
-        if xPosition-middle < 0:
+    if(abs(cx - middle) > error):  
+        if (cx - middle) < 0:
             GPIO.output(Motor1A, GPIO.LOW)
             GPIO.output(Motor1B, GPIO.HIGH)
             GPIO.output(Motor1E, GPIO.HIGH)
             print("Moving backwards")
-        elif xPosition-middle > 0:
+        elif (cx - middle) > 0:
             GPIO.output(Motor1A, GPIO.HIGH)
             GPIO.output(Motor1B, GPIO.LOW)
             GPIO.output(Motor1E, GPIO.HIGH)
