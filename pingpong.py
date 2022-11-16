@@ -87,6 +87,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     else:
         print("[Warning]Tag lost...")
     
+    if(abs(xPosition-middle) > error):  
+        if xPosition-middle < 0:
+            GPIO.output(Motor1A, GPIO.LOW)
+            GPIO.output(Motor1B, GPIO.HIGH)
+            GPIO.output(Motor1E, GPIO.HIGH)
+            print("Moving backwards")
+        elif xPosition-middle > 0:
+            GPIO.output(Motor1A, GPIO.HIGH)
+            GPIO.output(Motor1B, GPIO.LOW)
+            GPIO.output(Motor1E, GPIO.HIGH)
+            print("Moving forwards")
+         
     key = cv2.waitKey(1)
 
     #clearing the stream

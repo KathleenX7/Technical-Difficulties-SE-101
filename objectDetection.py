@@ -1,6 +1,6 @@
+import math
 import cv2
 import numpy as np
-import math
 
 CAMERA_DEVICE_ID = 0
 IMAGE_WIDTH = 320
