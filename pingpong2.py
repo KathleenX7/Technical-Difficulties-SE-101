@@ -16,7 +16,7 @@ GPIO.setup(Motor1B, GPIO.OUT)
 GPIO.setup(Motor1E, GPIO.OUT)
 print("Setup complete")
 
-error = 8
+error = 13
 middle = 120
 
 def isset(v):
@@ -72,25 +72,28 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     #find contour with max area (most of that color, likely the object) and store it
     max_area = 0
+    booleanVal = False
     for cont in contours:
         area = cv2.contourArea(cont)
         if area > max_area:
             max_area = area
             best_cont = cont
+            booleanVal = True
+        
 
     #find centroids of best_cont and draw a circle there
     cy = 0
-    if isset('best_cont'):
+    if isset('best_cont') and booleanVal:
         M = cv2.moments(best_cont)
         cx, cy = int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])
         print("Central pos: (%d, %d)" % (cx, cy))
         if (abs(cy - middle) > error):
-            if (cy - middle) > 0:
+            if (cy - middle) < 0:
                 GPIO.output(Motor1A, GPIO.LOW)
                 GPIO.output(Motor1B, GPIO.HIGH)
                 GPIO.output(Motor1E, GPIO.HIGH)
                 print("Moving backwards")
-            elif (cy - middle) < 0:
+            elif (cy - middle) > 0:
                 GPIO.output(Motor1A, GPIO.HIGH)
                 GPIO.output(Motor1B, GPIO.LOW)
                 GPIO.output(Motor1E, GPIO.HIGH)
