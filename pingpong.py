@@ -108,6 +108,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     if key == 'f':
         break
 
+    #trying to exit the code
+    #x= input('').split(" ")[0]
+    #while(x != 'F'):
+        #continue #wasting the buffer
+    #print("You have pressed the x option\n")
+    #print("Press F to exit..")
+    #getchar()
+
 camera.close()
 print("Clean up")
 GPIO.cleanup()

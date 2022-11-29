@@ -62,7 +62,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             max_area = area
             best_cont = cont
     
-    #find centroids of best_cont and draw a circle there
     if isset('best_cont'):
         M = cv2.moments(best_cont)
         cx, cy = int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])
