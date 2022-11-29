@@ -16,8 +16,8 @@ GPIO.setup(Motor1B, GPIO.OUT)
 GPIO.setup(Motor1E, GPIO.OUT)
 print("Setup complete")
 
-error = 15
-middle = 160
+error = 8
+middle = 120
 
 def isset(v):
     try:
@@ -79,18 +79,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             best_cont = cont
 
     #find centroids of best_cont and draw a circle there
-    cx = 0
+    cy = 0
     if isset('best_cont'):
         M = cv2.moments(best_cont)
         cx, cy = int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])
         print("Central pos: (%d, %d)" % (cx, cy))
-        if (abs(cx - middle) > error):
-            if (cx - middle) < 0:
+        if (abs(cy - middle) > error):
+            if (cy - middle) > 0:
                 GPIO.output(Motor1A, GPIO.LOW)
                 GPIO.output(Motor1B, GPIO.HIGH)
                 GPIO.output(Motor1E, GPIO.HIGH)
                 print("Moving backwards")
-            elif (cx - middle) > 0:
+            elif (cy - middle) < 0:
                 GPIO.output(Motor1A, GPIO.HIGH)
                 GPIO.output(Motor1B, GPIO.LOW)
                 GPIO.output(Motor1E, GPIO.HIGH)
@@ -108,14 +108,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     rawCapture.truncate(0)
     if key != -1:
         break
-
-    #trying to exit the code
-    #x= input('').split(" ")[0]
-    #while(x != 'F'):
-        #continue #wasting the buffer
-    #print("You have pressed the x option\n")
-    #print("Press F to exit..")
-    #getchar()
 
 camera.close()
 print("Clean up")
